@@ -1,2 +1,2 @@
-package.path = package.path ..';/lua-resty-repl/lib/?.lua;'
-package.path = package.path ..';/lua-resty-repl/vendor/?.lua;'
+package.path = package.path ..';/workspace/lua-resty-console/lib/?.lua;'
+--package.path = package.path ..';/workspace/lua-resty-console/vendor/?.lua;'

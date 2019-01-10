@@ -1,5 +1,5 @@
-local new_binding = require('resty.repl.binding').new
-local new_completer = require('resty.repl.completer').new
+local new_binding = require('resty.console.binding').new
+local new_completer = require('resty.console.completer').new
 local binding, completer, result, word
 local commands = {}
 
@@ -64,7 +64,7 @@ describe('repl completer', function()
     )
     assert.are_same({ 'myngx.req.' }, complete 'myngx.re')
     assert.are_same(
-      { 'myngx.req.get_body_file()', 'myngx.req.get_body_data()' },
+      { 'myngx.req.get_body_data()', 'myngx.req.get_body_file()' },
       complete 'myngx.req.get_'
     )
     assert.are_same({ 'myngx.req.get_body_data()' },
@@ -77,7 +77,7 @@ describe('repl completer', function()
 
   it('should complete upvalues', function()
     assert.are_same({ 'new_binding', 'new_completer' }, complete 'new_')
-    assert.are_same({ 'new_binding()' }, complete 'new_b')
+    assert.are_same({ 'new_binding(' }, complete 'new_b')
   end)
 
   it('should complete globals', function()
