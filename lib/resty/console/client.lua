@@ -1,3 +1,5 @@
+#!/usr/bin/env luajit
+
 ---
 --- Created by nickr.
 --- DateTime: 1/7/19 5:15 PM
@@ -37,8 +39,12 @@ ffi.cdef [[
 
 local function prompt_line(rclient, line_count)
     local context = rclient:command(consts.REPL_TYPE_CONTEXT)
-    --print(ins(context))
-    return '[' .. line_count .. '] ' .. context.name .. '> '
+    
+    if context then
+        return '[' .. line_count .. '] ' .. context.name  .. '> '
+    else
+        return nil
+    end
 end
 
 local main = function()
@@ -63,7 +69,13 @@ local main = function()
 
     local line_count = 1
     while true do
-        local input = readline(prompt_line(rclient, line_count))
+        local prompt = prompt_line(rclient, line_count)
+        if not prompt then
+            readline.puts('Disconnected. Exiting..')
+            return
+        end
+
+        local input = readline(prompt)
         --print('input:', input)
 
         if input and #input > 0 then
