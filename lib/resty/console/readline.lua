@@ -33,12 +33,7 @@ local SIG_ERR = -1
 
 local puts = function(text)
     text = tostring(text or '') .. '\n'
-    
-    if clib.rl_outstream then
-        return clib.fwrite(text, #text, 1, clib.rl_outstream)
-    else
-        return print(text)
-    end
+    return clib.fwrite(text, #text, 1, clib.rl_outstream)
 end
 
 local add_to_history = function(text, save)
