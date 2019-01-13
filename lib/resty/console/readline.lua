@@ -26,6 +26,7 @@ ffi.cdef [[
     /* readline.h */
     typedef void rl_vcpfunc_t (char *);
 
+    void rl_initialize();
     char *readline (const char *prompt);
 
     /* basic history handling */
@@ -92,17 +93,25 @@ if type(clib) == 'string' then
     return ffi.C.exit(2)
 end
 
+clib.rl_initialize()
 -- read history from file
 clib.read_history(history_file)
 
 local puts = function(text)
     text = tostring(text or '') .. '\n'
-    return clib.fwrite(text, #text, 1, clib.rl_outstream)
+    
+    if clib.rl_outstream then
+        return clib.fwrite(text, #text, 1, clib.rl_outstream)
+    else
+        return print(text)
+    end
 end
 
-local add_to_history = function(text)
+local add_to_history = function(text, save)
     clib.add_history(text)
-    clib.write_history(history_file)
+    if save then
+        clib.write_history(history_file)
+    end
 end
 
 local function set_completion_func(func)

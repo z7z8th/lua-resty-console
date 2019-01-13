@@ -5,7 +5,6 @@
 --- DateTime: 1/7/19 5:15 PM
 ---
 
-require 'resty.console.utils'     -- for string:split()
 local ffi = require 'ffi'
 local hiredis = require 'hiredis'
 local readline = require 'resty.console.readline'
@@ -13,9 +12,21 @@ local consts = require 'resty.console.consts'
 local ins = require "inspect"
 
 local HTTP_LINE = 'GET /console\r\n'
-local HOST, PORT = unpack((arg[1] or ''):split())
-HOST = HOST or 'localhost'
-PORT = PORT or '8000'
+
+local function parse(arg)
+    local host, port
+    local pos = arg[1]:find(':', 1, true)
+    if pos then 
+        host = arg[1]:sub(1, pos - 1)
+        port = arg[1]:sub(pos + 1)
+    else
+        host = arg[1] 
+    end
+
+    return host or 'localhost', port or 8000
+end
+
+local HOST, PORT = parse(arg)
 
 ffi.cdef [[
     /* lua-hiredis.c */
@@ -39,7 +50,8 @@ ffi.cdef [[
 
 local function prompt_line(rclient, line_count)
     local context = rclient:command(consts.REPL_TYPE_CONTEXT)
-    
+    -- local context = rclient:command(consts.REPL_TYPE_COMMAND)
+
     if context then
         return '[' .. line_count .. '] ' .. context.name  .. '> '
     else
@@ -55,7 +67,7 @@ local main = function()
         return
     end
 
-    print('Connected to ' .. HOST .. ':' .. PORT .. '. Press ^C twice to exit.\n');
+    print('Connected to ' .. HOST .. ':' .. PORT .. '. Press ^C twice to exit.');
 
     -- allow the connection to land on an HTTP handler
     local conn_ctx = ffi.cast('luahiredis_Connection *', rclient).pContext
@@ -63,7 +75,6 @@ local main = function()
 
     readline.set_completion_func(function(word)
         local matches = rclient:command(consts.REPL_TYPE_AUTOCOMP, word)
-        --print(ins(matches))
         return matches
     end)
 
@@ -71,7 +82,7 @@ local main = function()
     while true do
         local prompt = prompt_line(rclient, line_count)
         if not prompt then
-            readline.puts('Disconnected. Exiting..')
+            readline.puts('disconnected')
             return
         end
 
@@ -84,11 +95,12 @@ local main = function()
             if output then
                 readline.puts('=> ' .. output.name)
             else
-                return
+                readline.puts('unexpected response, disconnected')
+                return 
             end
 
-            if output and output.type and output.type ~= consts.REDIS_REPLY_ERROR then
-                readline.add_to_history(input)
+            if output and output.type then
+                readline.add_to_history(input, output.type ~= consts.REDIS_REPLY_ERROR)
             end
         end
     end

@@ -12,14 +12,6 @@ local function safe_match(str, re)
     return ok and res
 end
 
-function string:split(sep)
-    local fields
-    sep, fields = sep or ":", {}
-    local pattern = string.format("([^%s]+)", sep)
-    self:gsub(pattern, function(c) fields[#fields+1] = c end)
-    return fields
-end
-
 return {
     safe_match = safe_match
 }
