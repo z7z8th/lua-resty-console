@@ -3,6 +3,12 @@
 --- DateTime: 1/8/19 9:19 PM
 ---
 
+function string:split(sep)
+    local tokens = {}
+    local pattern = string.format("([^%s]+)", sep or ':')
+    self:gsub(pattern, function(c) table.insert(tokens, c) end)
+    return tokens
+end
 
 local function safe_match(str, re)
     local ok, res = pcall(function()
