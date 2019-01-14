@@ -12,10 +12,10 @@ local function safe_match(str, re)
     return ok and res
 end
 
-function self_path()
+local function self_path()
     local path = debug.getinfo(1).source
     -- trim the leading @ and the last component (file part)
-    return path:gsub('^"?@(.*)/[^/]+$', '%1')    
+    return path:gsub('^"?@(.*)/[^/]+$', '%1')
 end
 
 return {

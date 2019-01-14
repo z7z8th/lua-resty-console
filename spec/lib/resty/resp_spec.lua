@@ -8,19 +8,19 @@ local function new_sock(data)
     return {
         inbuf = '',
         outbuf = (data or ''):split('\r\n'),
-        send = function(self, data)
-            -- print('send:', data)
-            self.inbuf = self.inbuf .. data
+        send = function(self, dat)
+            -- print('send:', dat)
+            self.inbuf = self.inbuf .. dat
         end,
-        feed = function(self, data) 
-            self.outbuf = (data or ''):split('\r\n')
+        feed = function(self, dat)
+            self.outbuf = (dat or ''):split('\r\n')
         end,
-        receive = coroutine.wrap(function(self, param)
+        receive = coroutine.wrap(function(self)
             local prev_param
             for _, line in ipairs(self.outbuf) do
                 local _, size = coroutine.yield(line)
                 if prev_param and size == 2 then
-                    _, size = coroutine.yield('\r\n') 
+                    _, size = coroutine.yield('\r\n')
                 end
 
                 prev_param = size
@@ -43,7 +43,7 @@ describe('sock-mock', function()
     end)
 end)
 
-describe('resp protocol parser', function() 
+describe('resp protocol parser', function()
     it('should parse command', function()
         local sock = new_sock(
             '*1\r\n$1\r\n3\r\n' ..
@@ -63,7 +63,7 @@ describe('resp protocol parser', function()
             else
                 assert.equals(consts.REPL_TYPE_COMMAND, typ)
                 assert.equals('.quit', arg)
-                return 
+                return
             end
         end
 

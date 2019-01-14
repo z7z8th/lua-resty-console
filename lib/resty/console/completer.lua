@@ -191,7 +191,7 @@ function _M:find_matches(word)
     end
 end
 
-function _M.new(binding, commands)
+function _M.new(binding)
     return setmetatable({
         binding = binding,
     }, { __index = _M })

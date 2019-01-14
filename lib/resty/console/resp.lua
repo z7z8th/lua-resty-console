@@ -12,7 +12,7 @@ local ins = require 'inspect'
 
 local ok, new_tab = pcall(require, "table.new")
 if not ok or type(new_tab) ~= "function" then
-    new_tab = function(narr, nrec)
+    new_tab = function()
         return {}
     end
 end
@@ -81,13 +81,13 @@ local function _parse_redis_req(line, sock)
 
         -- print("multi-bulk reply: ", n)
         if n < 0 then
-            return null
+            return
         end
 
         local cmd
         local vals = new_tab(n - 1, 0)
         local nvals = 0
-        for i = 1, n do
+        for _ = 1, n do
             local res
             res, err = _parse_redis_req(nil, sock)
             if res then
@@ -141,7 +141,7 @@ local function _serialize_redis(data)
     elseif type(data) == 'table' then
         local r = { "*" .. #data }
         -- only iterate the array part
-        for i, v in ipairs(data) do
+        for _, v in ipairs(data) do
             if type(v) == 'string' then
                 r[#r + 1] = "$" .. #v
                 r[#r + 1] = v

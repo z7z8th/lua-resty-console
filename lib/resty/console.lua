@@ -7,7 +7,7 @@ local ins = require 'inspect'
 
 local ok, new_tab = pcall(require, "table.new")
 if not ok or type(new_tab) ~= "function" then
-    new_tab = function(narr, nrec)
+    new_tab = function()
         return {}
     end
 end
@@ -28,7 +28,7 @@ local function handler(type, arg)
 
     assert(#arg < 2, 'only a single string (including whitespaces) allowed')
     arg = arg[1]
-    ngx.log(ngx.DEBUG, ins(arg or type))
+    ngx_log(ngx.DEBUG, ins(arg or type))
 
     if type == consts.REPL_TYPE_COMMAND then
         if arg == '.quit' or arg == '.exit' then
@@ -48,13 +48,13 @@ local function handler(type, arg)
         ret.msg = _M.completer:find_matches(arg)
     end
 
-    -- ngx.log(ngx.DEBUG, ins(ret.msg))
+    -- ngx_log(ngx.DEBUG, ins(ret.msg))
     return ret
 end
 _M.handler = handler
 
 local function start()
-    ngx.log(ngx.DEBUG, 'start repl')
+    ngx_log(ngx.DEBUG, 'start repl')
 
     local caller_info = debug.getinfo(2)
     _M.binding = new_binding(caller_info)
@@ -63,7 +63,7 @@ local function start()
     local resp = resp_module.new(handler)
     resp:serve()
 
-    ngx.log(ngx.DEBUG, 'done')
+    ngx_log(ngx.DEBUG, 'done')
 end
 
 _M.start = start

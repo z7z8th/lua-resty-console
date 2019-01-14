@@ -1,10 +1,9 @@
 #!/usr/bin/env lua
 
-local ins = require 'inspect'
+-- local ins = require 'inspect'
 local history_file = os.getenv('HOME') ..'/.repl-history'
 local ffi = require 'ffi'
 local utils = require 'resty.console.utils'
-local clib
 
 ffi.cdef(io.open(utils.self_path() .. '/readline.h'):read('*a'))
 
@@ -14,8 +13,8 @@ local function load_readline()
     for _, suffix in ipairs({'.so.6', '.so.7', ''}) do
         pcall(ffi.load, 'libhistory' .. suffix)
         ok, clib = pcall(ffi.load, 'libreadline' .. suffix)
-        if ok then 
-            return clib 
+        if ok then
+            return clib
         end
     end
 
@@ -75,7 +74,7 @@ local function set_completion_func(func)
 end
 
 local sigint_count = 0
-local function sigint_handler(status)
+local function sigint_handler() -- status
     puts()
 
     if clib.rl_end == 0 then

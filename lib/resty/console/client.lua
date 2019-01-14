@@ -9,18 +9,18 @@ local ffi = require 'ffi'
 local hiredis = require 'hiredis'
 local readline = require 'resty.console.readline'
 local consts = require 'resty.console.consts'
-local ins = require "inspect"
+-- local ins = require "inspect"
 
 local HTTP_LINE = 'GET /console\r\n'
 
 local function parse(arg)
     local host, port
     local pos = arg[1]:find(':', 1, true)
-    if pos then 
+    if pos then
         host = arg[1]:sub(1, pos - 1)
         port = arg[1]:sub(pos + 1)
     else
-        host = arg[1] 
+        host = arg[1]
     end
 
     return host or 'localhost', port or 8000
@@ -96,7 +96,7 @@ local main = function()
                 readline.puts('=> ' .. output.name)
             else
                 readline.puts('unexpected response, disconnected')
-                return 
+                return
             end
 
             if output and output.type then
