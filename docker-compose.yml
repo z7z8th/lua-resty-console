@@ -1,0 +1,9 @@
+app:
+        image: "nickxiao/openresty-testsuite:latest"
+        command: "bash"
+        container_name: "lua-resty-console-tests"
+        volumes:
+                - ".:/lua-resty-console"
+        working_dir: "/lua-resty-console"
+
+
