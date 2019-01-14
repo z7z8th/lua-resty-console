@@ -2,12 +2,12 @@
 
 source "expect/lib/helpers.tcl"
 
-spawn "resty-repl"
+spawn luajit lib/resty/console/client.lua localhost:80
 
 expect_prompt_line 1
 
 input "x + x"
-expect_or_fail {ERROR: \[string "stdin"]:1: attempt to perform arithmetic on global 'x' (a nil value)}
+expect_or_fail {1: attempt to perform arithmetic on global 'x' (a nil value)}
 
 input "x = 1"
 expect_or_fail "=> nil"

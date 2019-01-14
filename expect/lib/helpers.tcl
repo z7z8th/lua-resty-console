@@ -1,6 +1,6 @@
 #!/usr/bin/env tclsh
 
-set timeout 1
+set timeout 3
 
 set force_conservative 0  ;# set to 1 to force conservative mode even if
 			  ;# script wasn't run conservatively originally
@@ -39,10 +39,10 @@ proc press_up_arrow_key {{times 1}} {
 }
 
 proc expect_prompt_line {line_number} {
-  expect_or_fail "\\\[$line_number] lua(main)> "
+  expect_or_fail "\\\[$line_number] ngx(content)> "
 }
 
 proc exit_repl {} {
-  input "exit"
+  input ".exit"
   expect_or_fail eof
 }

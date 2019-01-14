@@ -3,13 +3,14 @@ FROM openresty/openresty:1.13.6.2-xenial
 RUN apt-get update
 RUN apt-get install --yes --no-install-recommends perl expect tclsh 
 RUN apt-get install --yes --no-install-recommends build-essential git curl unzip libssl-dev 
-RUN luarocks install busted
-RUN luarocks install luacheck
-RUN luarocks install inspect
+RUN luarocks install busted 
+RUN luarocks install luacheck 
+RUN luarocks install inspect 
+#RUN luarocks install lua-hiredis
 RUN echo "#!/usr/bin/env resty" > /usr/local/bin/resty-busted \
       && echo "require 'busted.runner'({ standalone = false })" >> /usr/local/bin/resty-busted \
       && chmod +x /usr/local/bin/resty-busted 
-RUN apt-get purge --yes --auto-remove build-essential git curl unzip libssl-dev
-RUN rm -rf /var/lib/apt/lists/*
+#RUN apt-get purge --yes --auto-remove build-essential git curl unzip libssl-dev
+#RUN rm -rf /var/lib/apt/lists/*
 
 

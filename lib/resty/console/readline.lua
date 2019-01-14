@@ -5,7 +5,8 @@ local history_file = os.getenv('HOME') ..'/.repl-history'
 local ffi = require 'ffi'
 local utils = require 'resty.console.utils'
 
-ffi.cdef(io.open(utils.self_path() .. '/readline.h'):read('*a'))
+--ffi.cdef(io.open(utils.self_path() .. '/readline.h'):read('*a'))
+ffi.cdef(require 'resty.console.readline_h')
 
 local function load_readline()
     local ok, clib

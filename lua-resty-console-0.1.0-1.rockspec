@@ -23,6 +23,7 @@ build = {
       ["resty.console.completer"] = "lib/resty/console/completer.lua",
       ["resty.console.consts"] = "lib/resty/console/consts.lua",
       ["resty.console.readline"] = "lib/resty/console/readline.lua",
+      ["resty.console.readline_h"] = "lib/resty/console/readline_h.lua",
       ["resty.console.resp"] = "lib/resty/console/resp.lua",
       ["resty.console.utils"] = "lib/resty/console/utils.lua",
    },

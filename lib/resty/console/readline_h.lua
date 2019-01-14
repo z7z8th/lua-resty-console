@@ -1,4 +1,4 @@
-
+return [[
 /* signal.h */
 typedef void (*sig_t) (int);
 sig_t signal(int sig, sig_t func);
@@ -66,3 +66,4 @@ int rl_catch_signals;
 
 rl_hook_func_t *rl_startup_hook;
 int rl_readline_state;
+]]

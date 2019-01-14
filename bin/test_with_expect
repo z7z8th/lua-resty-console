@@ -1,7 +1,10 @@
 #!/bin/sh
 
 # install package
-luarocks make lua-resty-repl-scm-0.rockspec > /dev/null
+luarocks make lua-resty-console-0.1.0-1.rockspec > /dev/null
+
+mkdir -p logs
+/usr/local/openresty/nginx/sbin/nginx -p $PWD -c conf/nginx.conf
 
 suffix=.exp
 
@@ -30,3 +33,5 @@ for fn in `ls ./expect/*$suffix`; do
   before_each
   run_test $fn
 done
+
+kill `cat logs/nginx.pid`

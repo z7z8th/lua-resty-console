@@ -2,7 +2,7 @@
 
 source "expect/lib/helpers.tcl"
 
-spawn "resty-repl"
+spawn luajit lib/resty/console/client.lua localhost:80
 
 expect_prompt_line 1
 

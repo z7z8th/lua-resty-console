@@ -1,3 +1,5 @@
+DST_DIR = lua-resty-console
+
 all: lint test
 
 lint:
@@ -38,6 +40,9 @@ repl:
 			-I lib/    \
 			-I vendor/ \
 			-e 'require("resty.repl").start()'
+
+sync:
+	time (for d in lib/ Makefile lua/ bin/ conf/; do rsync -rP $$d $(TARGET):$(DST_DIR)/$$d & done; wait)
 
 .PHONY: lint test shell repl build push_images test_openresty \
 	test_luajit test_lua51 test_with_expect
