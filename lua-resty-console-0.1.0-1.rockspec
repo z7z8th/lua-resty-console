@@ -1,7 +1,7 @@
 package = "lua-resty-console"
 version = "0.1.0-1"
 source = {
-   url = "https://github.com/nicoster/lua-resty-console",
+   url = "git://github.com/nicoster/lua-resty-console",
    tag = "v0.1.0"
 }
 description = {
