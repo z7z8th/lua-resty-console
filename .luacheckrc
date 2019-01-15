@@ -1,6 +1,6 @@
 std = 'ngx_lua'
 files['spec'] = { std = '+busted' }
 
-globals = { 'string'}
+globals = {'string'}
 
 -- vim: ft=lua

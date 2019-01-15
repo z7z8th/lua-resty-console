@@ -1,4 +1,5 @@
 DST_DIR = lua-resty-console
+NGINX_PATH = /usr/local/opt/openresty/nginx/sbin:/usr/local/openresty/nginx/sbin:${PATH}
 
 all: lint test
 
@@ -25,7 +26,17 @@ shell:
 	docker-compose run --rm app
 
 sync:
-	time (for d in lib/ Makefile lua/ bin/ conf/; do rsync -rP $$d $(TARGET):$(DST_DIR)/$$d & done; wait)
+	time (for d in expect/ spec/ .luacheckrc docker-compose.yml lib/ Makefile lua/ bin/ conf/; do rsync -rP $$d $(TARGET):$(DST_DIR)/$$d & done; wait)
+
+run:
+	PATH=$(NGINX_PATH) nginx -p ${PWD} -c conf/nginx.conf
+
+kill:
+	kill `cat logs/nginx.pid` || echo
+
+log:
+	tail -f logs/error.log
+
 
 .PHONY: lint test shell repl build push_images test_openresty \
 	test_luajit_integrational 

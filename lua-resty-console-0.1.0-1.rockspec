@@ -27,9 +27,4 @@ build = {
       ["resty.console.resp"] = "lib/resty/console/resp.lua",
       ["resty.console.utils"] = "lib/resty/console/utils.lua",
    },
-   install = {
-      bin = {
-         -- ['resty-console'] = 'bin/resty-console'
-      }
-   }
 }

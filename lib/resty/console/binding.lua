@@ -7,6 +7,13 @@ local safe_match = require 'resty.console.utils'.safe_match
 local ins = require 'inspect'
 local InstanceMethods = {}
 
+local ok, new_tab = pcall(require, "table.new")
+if not ok or type(new_tab) ~= "function" then
+    new_tab = function()
+        return {}
+    end
+end
+
 local result_mt = {}
 result_mt.__index = result_mt
 function result_mt:inspect()
@@ -19,22 +26,34 @@ function result_mt:inspect()
     end
 
     local value = self.val
-    if _G.ngx and (_G.ngx.null == value) then
+    if _G.ngx and (_G.ngx.null == self.val) then
         value = '<ngx.null>'
-    elseif 'table' == type(value) then
-        value = ins(value)
+    elseif 'table' == type(self.val) then
+        print(ins(self))
+        if self.multi then
+            local t = new_tab(#self.val, 0)
+            for _, v in ipairs(self.val) do
+                table.insert(t, ins(v))
+            end
+            value = table.concat(t, ', ')
+        else
+            value = ins(value)
+        end
     end
 
     return tostring(value)
 end
 
 local make_result = function(ok, ...)
-    local val = { ... }
+    local val = {...}
+    local multi
     --ngx.log(ngx.DEBUG, 'res:', inspect(val))
     if #val < 2 then
         val = val[1]
+    else
+        multi = true
     end
-    return setmetatable({ ok = ok, val = val }, result_mt)
+    return setmetatable({ ok = ok, val = val, multi = multi }, result_mt)
 end
 _M.make_result = make_result
 

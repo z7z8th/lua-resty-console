@@ -1,0 +1,25 @@
+#!/usr/bin/expect -f
+
+source "expect/lib/helpers.tcl"
+
+spawn luajit lib/resty/console/client.lua localhost:80
+
+expect_prompt_line 1
+
+input "(function() return 'a', 'b' end)()"
+expect_or_fail {=> "a", "b"}
+
+expect_prompt_line 2
+
+input "(function() return {'a'}, 'b' end)()"
+expect_or_fail "=> { \"a\" }, \"b\""
+
+expect_prompt_line 3
+
+input "(function() return {{'a'}, 'b'} end)()"
+expect_or_fail "=> { { \"a\" }, \"b\" }"
+
+expect_prompt_line 4
+
+
+exit_repl
