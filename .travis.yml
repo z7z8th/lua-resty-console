@@ -1,18 +1,18 @@
 language: bash
 
-cache:
-  directories:
-    - /home/travis/docker/
+# cache:
+#   directories:
+#     - /home/travis/docker/
 
-env:
-  global:
-    - OPENRESTY_IMAGE=/home/travis/docker/openresty_image.tar.gz
+# env:
+#   global:
+#     - OPENRESTY_IMAGE=/home/travis/docker/openresty_image.tar.gz
 
 services:
   - docker
 
 before_install:
-  - if [ -f ${OPENRESTY_IMAGE} ]; then gunzip -c ${OPENRESTY_IMAGE} | docker load; else docker-compose pull app; docker save saksmlz/openresty-testsuite:latest | gzip > ${OPENRESTY_IMAGE}; fi
+  - make build
 
 script:
   - make
