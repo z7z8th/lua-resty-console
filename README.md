@@ -29,6 +29,8 @@ luarocks install lua-resty-console
 Add the following snippet into your nignx configuration
 ```
 lua_shared_dict mycache 128M;   # for demo only 
+lua_shared_dict metrics 128M;   # for demo only
+
 server {
   listen 127.0.0.1:8001;
   location /console {
@@ -95,7 +97,7 @@ Below is an example of replicating the functionalities of [lua-resty-shdict-serv
 [12] ngx(content)> ngx.sha →→
 ngx.sha1_bin()  ngx.shared.     
 [12] ngx(content)> ngx.shared. →→
-ngx.shared.cache.    ngx.shared.metrics.  
+ngx.shared.mycache.    ngx.shared.metrics.  
 [12] ngx(content)> c = ngx.shared.mycache
 => nil
 [13] ngx(content)> c
