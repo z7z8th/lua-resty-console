@@ -1,121 +1,135 @@
-# Welcome to Resty Repl
+# Welcome to Resty Console
 
-## Features
+[Resty Repl](https://github.com/saks/lua-resty-repl) is a powerful tool with a bunch of nice [features](https://github.com/saks/lua-resty-repl#features). I personally am a big fan of it. But still a few features are missing:
 
-Resty Repl is a powerful alternative to the standard [luajit](http://luajit.org/) shell ispired by [pry](https://github.com/pry/pry). It is written from scratch to provide a number of advanced features, including:
-* Full read/write access to locals, upvalues and global variables
-* Pretty print for objects
-* A Powerful and flexible command system
-* Ability to view and replay history
-* Ability to see a context and source of the place in code from where repl was started
-* Runtime invocation (use Resty Repl as a developer console or debugger)
-* Tab completion
-* Simple and easy way to debug lua running in the nginx ([openresty](http://openresty.org/en/))
+* Have to modify source code of each handler to use Resty Repl
+* Nginx needs to run in non-daemon mode to leverage the TTY/readline facilities
 
-## Runtime invocation
+These limitations make it less useful for development workflow or production live debugging. So here comes the [Resty Console](https://github.com/nicoster/lua-resty-console)
 
-First install luarock
-```bash
-luarocks install lua-resty-repl
+Resty Console inherits the code of resty-repl so it inherits the nice features like:
+* readline integration
+* auto completion
+* pretty print objects (powered by inspect.lua)
+## Status
+Experimental.
+
+## Installation
+```
+luarocks install lua-resty-console
 ```
 
-Then just drop this snippet anywhere in your code:
+## Synopsis
 
-```lua
-require('resty.repl').start()
+
+`Resty Console` consists of 2 parts - server side and client.
+
+### Server Side
+Add the following snippet into your nignx configuration
 ```
-
-or run as cli:
-```bash
-resty-repl
-```
-
-## Openresty debugger
-But what makes it really nice is that now you can debug your [openresty](http://openresty.org/en/) code right from running nginx!
-
-```nginx
-master_process off;
-error_log stderr notice;
-daemon off;
-
-events {
-  worker_connections 1024;
-}
-
-http {
-  server {
-    listen 8080;
-    lua_code_cache off;
-
-    location / {
-      content_by_lua_block {
-        require('resty.repl').start()
-      }
+lua_shared_dict mycache 128M;   # for demo only 
+server {
+  listen 127.0.0.1:8001;
+  location /console {
+    content_by_lua_block {
+      require('resty.console').start()
     }
   }
-}
+```
+As this exposes OpenResty Lua VM for inspection, and `Resty Console` doesn't have builtin authentication yet, it's crucial to listen only on `localhost` ports. 
+The location is hardcoded to `console` in the client, and it's not configurable for now.
+
+### Client
+
+Issue the following command to launch client and connect to the server
+```
+$ luajit <LUAROCKS-DIR>/lib/resty/console/client.lua localhost:8001
+Connected to localhost:8001. Press ^C twice to exit.
+[1] ngx(content)>
 ```
 
-and start debugging:
-```bash
-$ curl -H X-Header:buz 172.17.0.2:8080?foo=bar
+#### Auto Completion
+```
+[1] ngx(content)> ngx.E →→      #press tab twice
+ngx.EMERG  ngx.ERR    ngx.ERROR        
 
 ```
 
+#### Invoke Function
 ```
-nginx -c /tmp/ngx.conf
-2016/09/20 16:26:33 [alert] 2257#0: lua_code_cache is off; this will hurt performance in /tmp/ngx.conf:12
-nginx: [alert] lua_code_cache is off; this will hurt performance in /tmp/ngx.conf:12
-2016/09/20 16:26:33 [notice] 2257#0: using the "epoll" event method
-2016/09/20 16:26:33 [notice] 2257#0: openresty/1.11.2.1
-2016/09/20 16:26:33 [notice] 2257#0: built by gcc 4.9.2 (Debian 4.9.2-10)
-2016/09/20 16:26:33 [notice] 2257#0: OS: Linux 4.4.0-38-generic
-2016/09/20 16:26:33 [notice] 2257#0: getrlimit(RLIMIT_NOFILE): 65536:65536
+[1] ngx(content)> f = function() return 'a', 'b' end
+=> nil
+[2] ngx(content)> f()
+=> "a", "b"
 
-From: content_by_lua(ngx.conf:17) @ line 2
+[7] ngx(content)> ngx.md5('abc')
+=> 900150983cd24fb0d6963f7d28e17f72
+[8] ngx(content)> ngx.time()
+=> 1547534019
+```
 
-[1] ngx(content)> ngx.req.get_headers()
-=> {
-  accept = "*/*",
-  host = "172.17.0.2:8080",
-  ["user-agent"] = "curl/7.47.0",
-  ["x-header"] = "buz",
-  <metatable> = {
-    __index = <function 1>
+#### Check VM Internals
+```
+[9] ngx(content)> ngx.config.prefix()
+=> /workspace/lua-resty-console/
+[10] ngx(content)> ngx.config.ngx_lua_version
+=> 10011
+[11] ngx(content)> ngx.config.nginx_configure()
+=>  --prefix=/usr/local/Cellar/openresty/1.13.6.1/nginx --with-cc-opt='-O2 -I/usr/local/include -I/usr/local/opt/pcre/include -I/usr/local/opt/openresty-openssl/include' --add-module=../ngx_devel_kit-0.3.0 --add-module=../echo-nginx-module-0.61 --add-module=../xss-nginx-module-0.05 --add-module=../ngx_coolkit-0.2rc3 --add-module=../set-misc-nginx-module-0.31 --add-module=../form-input-nginx-module-0.12 --add-module=../encrypted-session-nginx-module-0.07 --add-module=../srcache-nginx-module-0.31 --add-module=...
+
+
+[12] ngx(content)> ngx.sha →→
+ngx.sha1_bin()  ngx.shared.     
+[12] ngx(content)> ngx.shared. →→
+ngx.shared.cache.    ngx.shared.metrics.  
+[12] ngx(content)> c = ngx.shared.mycache
+=> nil
+[13] ngx(content)> c
+=> { <userdata 1>,
+  <metatable> = <1>{
+    __index = <table 1>,
+    add = <function 1>,
+    delete = <function 2>,
+    flush_all = <function 3>,
+    flush_expired = <function 4>,
+    get = <function 5>,
+    get_keys = <function 6>,
+    get_stale = <function 7>,
+    incr = <function 8>,
+    llen = <function 9>,
+    lpop = <function 10>,
+    lpush = <function 11>,
+    replace = <function 12>,
+    rpop = <function 13>,
+    rpush = <function 14>,
+    safe_add = <function 15>,
+    safe_set = <function 16>,
+    set = <function 17>
   }
 }
-[2] ngx(content)> ngx.req.get_uri_args()
-=> {
-  foo = "bar"
-}
-[3] ngx(content)> ngx.say 'it works!'
+[14] ngx(content)> c:set('a', 1)
+=> true
+[15] ngx(content)> c:get('a')
 => 1
-[4] ngx(content)> ngx.exit(ngx.OK)
-172.17.0.1 - - [20/Sep/2016:16:26:50 +0000] "GET /?foo=bar HTTP/1.1" 200 20 "-" "curl/7.47.0"
+[16] ngx(content)> c:get_keys()
+=> { "a" }
+
 ```
+
 
 ## Compatibility
 Right now it's only compatible with:
 - luajit
-- lua5.1 (no readline)
 
-## Os Support
+## OS Support
 - GNU/Linux
 - Mac OS
 
-## Roadmap
-- colorized output
-- smarter completion
-- full readline support for lua (no ffi environments)
-- remote debugger
-- command for showing function source
-- test suite with [resty-cli](https://github.com/openresty/resty-cli), [luajit](http://luajit.org/) and different versions of lua
-- better inspect library
 
 ## Code Status
 
-[![Build Status](https://travis-ci.org/saks/lua-resty-repl.svg?branch=master)](https://travis-ci.org/saks/lua-resty-repl)
+TBD
 
 ## License
 
-resty-repl is released under the [MIT License](http://www.opensource.org/licenses/MIT).
+resty-console is released under the [MIT License](http://www.opensource.org/licenses/MIT).
