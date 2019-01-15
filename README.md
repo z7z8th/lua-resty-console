@@ -1,16 +1,17 @@
 # Welcome to Resty Console
 
-[Resty Repl](https://github.com/saks/lua-resty-repl) is a powerful tool with a bunch of nice [features](https://github.com/saks/lua-resty-repl#features). I personally am a big fan of it. But still a few features are missing:
+Aliaksandr's [Resty Repl](https://github.com/saks/lua-resty-repl) is a powerful tool with a bunch of nice [features](https://github.com/saks/lua-resty-repl#features). I personally am a big fan of it. But still a few features are missing:
 
-* Have to modify source code of each handler to use Resty Repl
+* Have to modify source code of each nginx handler to use Resty Repl
 * Nginx needs to run in non-daemon mode to leverage the TTY/readline facilities
 
-These limitations make it less useful for development workflow or production live debugging. So here comes the [Resty Console](https://github.com/nicoster/lua-resty-console)
+These limitations make it less useful for development workflow and production live debugging. So here comes the [Resty Console](https://github.com/nicoster/lua-resty-console).
 
-Resty Console inherits the code of resty-repl so it inherits the nice features like:
-* readline integration
+`Resty Console` inherits the code of `resty-repl` so it inherits the nice features like:
+* readline full integration
 * auto completion
 * pretty print objects (powered by inspect.lua)
+* and more ..
 ## Status
 Experimental.
 
@@ -22,7 +23,7 @@ luarocks install lua-resty-console
 ## Synopsis
 
 
-`Resty Console` consists of 2 parts - server side and client.
+`Resty Console` consists of 2 parts - server side and client. This separation allows us to both enjoy all the goodies of readline and keep footprints on the server minimium.
 
 ### Server Side
 Add the following snippet into your nignx configuration
@@ -69,13 +70,15 @@ ngx.EMERG  ngx.ERR    ngx.ERROR
 ```
 
 #### Check VM Internals
+
+Below is an example to implement similar functionality of [lua-resty-shdict-server](https://github.com/fffonion/lua-resty-shdict-server)
 ```
 [9] ngx(content)> ngx.config.prefix()
 => /workspace/lua-resty-console/
 [10] ngx(content)> ngx.config.ngx_lua_version
 => 10011
 [11] ngx(content)> ngx.config.nginx_configure()
-=>  --prefix=/usr/local/Cellar/openresty/1.13.6.1/nginx --with-cc-opt='-O2 -I/usr/local/include -I/usr/local/opt/pcre/include -I/usr/local/opt/openresty-openssl/include' --add-module=../ngx_devel_kit-0.3.0 --add-module=../echo-nginx-module-0.61 --add-module=../xss-nginx-module-0.05 --add-module=../ngx_coolkit-0.2rc3 --add-module=../set-misc-nginx-module-0.31 --add-module=../form-input-nginx-module-0.12 --add-module=../encrypted-session-nginx-module-0.07 --add-module=../srcache-nginx-module-0.31 --add-module=...
+=>  --prefix=/usr/local/Cellar/openresty/1.13.6.1/nginx --with-cc-opt='-O2 -I/usr/local/include -I/usr/local/opt/pcre/include -I/usr/local/opt/openresty-openssl/include' --add-module=../ngx_devel_kit-0.3.0 --add-module=../echo-nginx-module-0.61 ...
 
 
 [12] ngx(content)> ngx.sha →→
