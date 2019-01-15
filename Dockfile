@@ -13,4 +13,3 @@ RUN echo "#!/usr/bin/env resty" > /usr/local/bin/resty-busted \
 RUN apt-get purge --yes --auto-remove build-essential git curl unzip libssl-dev
 RUN rm -rf /var/lib/apt/lists/*
 
-ADD bin/hiredis.so /usr/local/openresty/luajit/lib/lua/5.1/
