@@ -1,8 +1,8 @@
 # Welcome to Resty Console
 
-Aliaksandr's [Resty Repl](https://github.com/saks/lua-resty-repl) is a powerful tool with a bunch of nice [features](https://github.com/saks/lua-resty-repl#features). I personally am a big fan of it. But still a few features are missing:
+Aliaksandr's [Resty Repl](https://github.com/saks/lua-resty-repl) is a powerful tool with a bunch of nice [features](https://github.com/saks/lua-resty-repl#features). I personally am a big fan of it. But still it has a few drawbacks:
 
-* Have to modify source code of each nginx handler to use Resty Repl
+* Has to modify source code for each nginx handler in question to use Resty Repl
 * Nginx needs to run in non-daemon mode to leverage the TTY/readline facilities
 
 These limitations make it less useful for development workflow and production live debugging. So here comes the [Resty Console](https://github.com/nicoster/lua-resty-console).
@@ -37,8 +37,8 @@ server {
     }
   }
 ```
-As this exposes OpenResty Lua VM for inspection, and `Resty Console` doesn't have builtin authentication yet, it's crucial to listen only on `localhost` ports. 
-The location is hardcoded to `console` in the client, and it's not configurable for now.
+As this exposes Openresty Lua VM for inspection, and `Resty Console` doesn't have builtin authentication yet, it's crucial to listen only on `localhost` ports. 
+The location is hardcoded to `/console` in the client, and it's not configurable for now.
 
 ### Client
 
@@ -53,7 +53,7 @@ Connected to localhost:8001. Press ^C twice to exit.
 ```
 [1] ngx(content)> ngx.E →→      #press tab twice
 ngx.EMERG  ngx.ERR    ngx.ERROR        
-[2] ngx(content)> _G. →→
+[1] ngx(content)> _G. →→
 _G._.                _G.debug.            _G.loadfile()        _G.pairs()           _G.setmetatable()
 _G._G.               _G.dofile()          _G.loadstring()      _G.pcall()           _G.string.
 _G._VERSION          _G.error()           _G.math.             _G.print()           _G.table.
@@ -64,7 +64,7 @@ _G.bit.              _G.io.               _G.next()            _G.rawset()      
 _G.c.                _G.ipairs()          _G.ngx.              _G.require()         _G.xpcall()
 _G.collectgarbage()  _G.jit.              _G.os.               _G.select()          
 _G.coroutine.        _G.load()            _G.package.          _G.setfenv()         
-[2] ngx(content)> _G.
+[1] ngx(content)> _G.
 ```
 
 #### Invoke Functions
@@ -74,15 +74,15 @@ _G.coroutine.        _G.load()            _G.package.          _G.setfenv()
 [2] ngx(content)> f()
 => "a", "b"
 
-[7] ngx(content)> ngx.md5('abc')
+[3] ngx(content)> ngx.md5('abc')
 => 900150983cd24fb0d6963f7d28e17f72
-[8] ngx(content)> ngx.time()
+[4] ngx(content)> ngx.time()
 => 1547534019
 ```
 
 #### Check VM Internals
 
-Below is an example of replicating the functionality of [lua-resty-shdict-server](https://github.com/fffonion/lua-resty-shdict-server, manipulating shared-dict with canonical APIs.
+Below is an example of replicating the functionalities of [lua-resty-shdict-server](https://github.com/fffonion/lua-resty-shdict-server), manipulating shared-dict with canonical APIs directly, in the most natrual way.
 ```
 [9] ngx(content)> ngx.config.prefix()
 => /workspace/lua-resty-console/
@@ -133,7 +133,7 @@ ngx.shared.cache.    ngx.shared.metrics.
 
 ## Compatibility
 Right now it's only compatible with:
-- luajit
+- Openresty/luajit
 
 ## OS Support
 - GNU/Linux
@@ -142,7 +142,7 @@ Right now it's only compatible with:
 
 ## Code Status
 
-TBD
+[![Build Status](https://api.travis-ci.com/nicoster/lua-resty-console.svg?branch=master)](https://api.travis-ci.com/nicoster/lua-resty-console)
 
 ## License
 
