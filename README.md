@@ -53,7 +53,18 @@ Connected to localhost:8001. Press ^C twice to exit.
 ```
 [1] ngx(content)> ngx.E →→      #press tab twice
 ngx.EMERG  ngx.ERR    ngx.ERROR        
-
+[2] ngx(content)> _G. →→
+_G._.                _G.debug.            _G.loadfile()        _G.pairs()           _G.setmetatable()
+_G._G.               _G.dofile()          _G.loadstring()      _G.pcall()           _G.string.
+_G._VERSION          _G.error()           _G.math.             _G.print()           _G.table.
+_G.__ngx_cycle       _G.gcinfo()          _G.module()          _G.rawequal()        _G.tonumber()
+_G.__ngx_req         _G.getfenv()         _G.ndk.              _G.rawget()          _G.tostring()
+_G.assert()          _G.getmetatable()    _G.newproxy()        _G.rawlen()          _G.type()
+_G.bit.              _G.io.               _G.next()            _G.rawset()          _G.unpack()
+_G.c.                _G.ipairs()          _G.ngx.              _G.require()         _G.xpcall()
+_G.collectgarbage()  _G.jit.              _G.os.               _G.select()          
+_G.coroutine.        _G.load()            _G.package.          _G.setfenv()         
+[2] ngx(content)> _G.
 ```
 
 #### Invoke Functions
