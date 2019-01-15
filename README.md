@@ -56,7 +56,7 @@ ngx.EMERG  ngx.ERR    ngx.ERROR
 
 ```
 
-#### Invoke Function
+#### Invoke Functions
 ```
 [1] ngx(content)> f = function() return 'a', 'b' end
 => nil
@@ -71,7 +71,7 @@ ngx.EMERG  ngx.ERR    ngx.ERROR
 
 #### Check VM Internals
 
-Below is an example to implement similar functionality of [lua-resty-shdict-server](https://github.com/fffonion/lua-resty-shdict-server)
+Below is an example of replicating the functionality of [lua-resty-shdict-server](https://github.com/fffonion/lua-resty-shdict-server, manipulating shared-dict with canonical APIs.
 ```
 [9] ngx(content)> ngx.config.prefix()
 => /workspace/lua-resty-console/
