@@ -6,14 +6,14 @@ Aliaksandr's [Resty Repl](https://github.com/saks/lua-resty-repl) is a powerful 
 
 * Has to modify source code for each nginx handler in question to use Resty Repl
 * Nginx needs to run in non-daemon mode to leverage the TTY/readline facilities
+These limitations make it less useful for development workflow and production live debugging. So here comes the [resty-console](https://github.com/nicoster/lua-resty-console).
 
-These limitations make it less useful for development workflow and production live debugging. So here comes the [Resty Console](https://github.com/nicoster/lua-resty-console).
-
-`Resty Console` inherits the code of `resty-repl` so it inherits the nice features like:
-* readline full integration
-* auto completion
+`resty-console` inherits the code of `resty-repl` so it inherits the features like:
+* [readline](https://tiswww.case.edu/php/chet/readline/rltop.html) full integration - all the shortcuts like ^A, ^R, .. are supported
+* auto completion / command history
 * pretty print objects (powered by inspect.lua)
 * and more ..
+
 ## Status
 Experimental.
 
@@ -25,9 +25,11 @@ luarocks install lua-resty-console
 ## Synopsis
 
 
-`Resty Console` consists of 2 parts - server side and client. This separation allows us to both enjoy all the goodies of readline and keep footprints on the server minimium.
+`resty-console` consists of 2 parts - backend and client. This separation allows you to enjoy all the goodies of readline without messing with the TTY thing in nginx process. 
 
-### Server Side
+The client talks to the backend using [REdis Serialization Protocol](https://redis.io/topics/protocol) which is simple and efficient. Actually this design makes the client a universal REPL client with all the beloved readline features, as long as the implementation of a backend conforms to the protocol.
+
+### Backend
 Add the following snippet into your nignx configuration
 ```
 lua_shared_dict mycache 128M;   # for demo only 
@@ -41,16 +43,21 @@ server {
     }
   }
 ```
-As this exposes Openresty Lua VM for inspection, and `Resty Console` doesn't have builtin authentication yet, it's crucial to listen only on `localhost` ports. 
+As this exposes Openresty Lua VM for inspection, and `resty-console` doesn't have builtin authentication yet, it's crucial to listen only on `localhost` ports. 
 The location is hardcoded to `/console` in the client, and it's not configurable for now.
 
 ### Client
 
-Issue the following command to launch client and connect to the server
+Issue the following command to launch client and connect to the backend
 ```
 $ luajit <LUAROCKS-DIR>/lib/resty/console/client.lua localhost:8001
 Connected to localhost:8001. Press ^C twice to exit.
 [1] ngx(content)>
+```
+You may run the following command to install a shortcut to the client.
+
+```
+sudo ln -s $(luarocks show lua-resty-console|grep -o '/.*client.lua') /usr/local/bin/resty-cli
 ```
 
 #### Auto Completion
@@ -138,6 +145,11 @@ ngx.shared.mycache.    ngx.shared.metrics.
 ## Compatibility
 Right now it's only compatible with:
 - Openresty/luajit
+
+## Known Issues
+If nginx runs with multiple workers (which is the normal case), each worker has an isolated Lua VM to handle requests. When a resty-console client connects to the backend several times, there's a good chance the connections are established with different workers, thus each time the client is dealing with different Lua VM.
+
+There is a nginx patch [listen per worker](https://rarut.wordpress.com/2013/06/18/multi-worker-statistics-and-control-with-nginx-per-worker-listener-patch/) which might address this issue. It allows each worker to listen on a unique port, so client could connect to different workers at will.
 
 ## OS Support
 - GNU/Linux
