@@ -1,5 +1,7 @@
 # Welcome to Resty Console
 
+[![Build Status](https://api.travis-ci.com/nicoster/lua-resty-console.svg?branch=master)](https://api.travis-ci.com/nicoster/lua-resty-console)
+
 Aliaksandr's [Resty Repl](https://github.com/saks/lua-resty-repl) is a powerful tool with a bunch of nice [features](https://github.com/saks/lua-resty-repl#features). I personally am a big fan of it. But still it has a few drawbacks:
 
 * Has to modify source code for each nginx handler in question to use Resty Repl
@@ -84,7 +86,7 @@ _G.coroutine.        _G.load()            _G.package.          _G.setfenv()
 
 #### Check VM Internals
 
-Below is an example of replicating the functionalities of [lua-resty-shdict-server](https://github.com/fffonion/lua-resty-shdict-server), manipulating shared-dict with canonical APIs directly, in the most natrual way.
+Below is an example of replicating the functionalities of [lua-resty-shdict-server](https://github.com/fffonion/lua-resty-shdict-server), manipulating shared-dict with canonical APIs directly.
 ```
 [9] ngx(content)> ngx.config.prefix()
 => /workspace/lua-resty-console/
@@ -141,10 +143,10 @@ Right now it's only compatible with:
 - GNU/Linux
 - Mac OS
 
-
-## Code Status
-
-[![Build Status](https://api.travis-ci.com/nicoster/lua-resty-console.svg?branch=master)](https://api.travis-ci.com/nicoster/lua-resty-console)
+## Credits
+- the client part uses [lua-hiredis](https://github.com/agladysh/lua-hiredis) for redis protocol parsing
+- the backend uses the code from [lua-resty-shdict-server](https://github.com/fffonion/lua-resty-shdict-server) for redis protocol parsing
+- the binding, completer, readline modules are inherited from [lua-resty-repl](https://github.com/saks/lua-resty-repl)
 
 ## License
 
