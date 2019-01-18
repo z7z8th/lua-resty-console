@@ -1,16 +1,20 @@
 DST_DIR = lua-resty-console
 NGINX_PATH = /usr/local/opt/openresty/nginx/sbin:/usr/local/openresty/nginx/sbin:${PATH}
+DOCKER_IMAGE = nickxiao/openresty-testsuite
 
 all: lint test
 
 lint:
 	docker-compose run --rm app luacheck .
 
-build:
-	docker build -t nickxiao/openresty-testsuite:latest -f Dockfile .
+build_image:
+	docker build -t ${DOCKER_IMAGE}:latest -f Dockfile .
 
-push_images:
-	docker push nickxiao/openresty-testsuite:latest
+push_image:
+	docker push ${DOCKER_IMAGE}:latest
+
+pull_image:
+	docker pull ${DOCKER_IMAGE}:latest
 
 test: test_openresty test_luajit_integrational
 
