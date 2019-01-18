@@ -1,5 +1,4 @@
 -- lua REPL runtime binding
--- stealing from https://github.com/saks/lua-resty-repl.git
 
 local _M = {}
 

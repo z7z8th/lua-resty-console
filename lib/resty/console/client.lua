@@ -9,7 +9,7 @@ local ffi = require 'ffi'
 local hiredis = require 'hiredis'
 local readline = require 'resty.console.readline'
 local consts = require 'resty.console.consts'
--- local ins = require "inspect"
+local ins = require "inspect"
 
 local HTTP_LINE = 'GET /console\r\n'
 
@@ -63,13 +63,13 @@ local main = function()
 
     local rclient = hiredis.connect(HOST, PORT)
     if not rclient then
-        print('Unable to connect to ' .. HOST .. ':' .. PORT)
+        print('connect to ' .. HOST .. ':' .. PORT .. ': Connection refused')
         return
     end
 
-    print('Connected to ' .. HOST .. ':' .. PORT .. '. Press ^C twice to exit.');
+    readline.puts('Connected to ' .. HOST .. ':' .. PORT)
 
-    -- allow the connection to land on an HTTP handler
+    -- allow the connection to land on an HTTP handle
     local conn_ctx = ffi.cast('luahiredis_Connection *', rclient).pContext
     ffi.C.write(conn_ctx.fd, HTTP_LINE, #HTTP_LINE)
 
@@ -82,28 +82,33 @@ local main = function()
     while true do
         local prompt = prompt_line(rclient, line_count)
         if not prompt then
-            readline.puts('disconnected')
-            return
+            break
         end
 
         local input = readline(prompt)
-        --print('input:', input)
+        -- print('input:', ins(input))
 
-        if input and #input > 0 then
-            line_count = line_count + 1
-            local output = rclient:command(consts.REPL_TYPE_COMMAND, input)
-            if output then
-                readline.puts('=> ' .. output.name)
-            else
-                readline.puts('unexpected response, disconnected')
-                return
-            end
+        if input then
+            if #input > 0 then
+                line_count = line_count + 1
+                local output = rclient:command(consts.REPL_TYPE_COMMAND, input)
+                if output then
+                    readline.puts('=> ' .. output.name)
+                else
+                    break
+                end
 
-            if output and output.type then
-                readline.add_to_history(input, output.type ~= consts.REDIS_REPLY_ERROR)
+                if output and output.type then
+                    readline.add_to_history(input, output.type ~= consts.REDIS_REPLY_ERROR)
+                end
             end
+        else
+            readline.puts('')
+            break
         end
     end
+
+    readline.puts('Connection to '.. HOST .. ':' .. PORT .. ' closed')
 end
 
 main()

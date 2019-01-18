@@ -79,7 +79,7 @@ local function sigint_handler() -- status
     if clib.rl_end == 0 then
         sigint_count = sigint_count + 1
         if sigint_count == 1 then
-            puts('press ^C once again to exit')
+            puts('Press ^C once again to exit')
         else
             return ffi.C.exit(1)
         end

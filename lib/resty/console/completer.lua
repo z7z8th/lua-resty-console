@@ -1,5 +1,4 @@
 -- lua Readline completer
--- stealing from https://github.com/saks/lua-resty-repl.git
 
 local safe_match = require('resty.console.utils').safe_match
 local _M = {}

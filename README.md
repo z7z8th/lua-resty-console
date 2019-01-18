@@ -9,7 +9,7 @@ Aliaksandr's [Resty Repl](https://github.com/saks/lua-resty-repl) is a powerful 
 These limitations make it less useful for development workflow and production live debugging. So here comes the [resty-console](https://github.com/nicoster/lua-resty-console).
 
 `resty-console` inherits the code of `resty-repl` so it inherits the features like:
-* [readline](https://tiswww.case.edu/php/chet/readline/rltop.html) full integration - all the shortcuts like ^A, ^R, .. are supported
+* [readline](https://tiswww.case.edu/php/chet/readline/rltop.html) full integration - all the shortcuts like `^A`, `^R`, `ESC+DEL`, .. are supported
 * auto completion / command history
 * pretty print objects (powered by inspect.lua)
 * and more ..
@@ -147,7 +147,7 @@ Right now it's only compatible with:
 - Openresty/luajit
 
 ## Known Issues
-If nginx runs with multiple workers (which is the normal case), each worker has an isolated Lua VM to handle requests. When a resty-console client connects to the backend several times, there's a good chance the connections are established with different workers, thus each time the client is dealing with different Lua VM.
+If nginx runs with multiple workers (which is the normal case), each worker has an isolated Lua VM to handle requests. When a resty-console client connects to the backend, there's a good chance that connections are established with different workers, thus each time the client is dealing with different Lua VM.
 
 There is a nginx patch [listen per worker](https://rarut.wordpress.com/2013/06/18/multi-worker-statistics-and-control-with-nginx-per-worker-listener-patch/) which might address this issue. It allows each worker to listen on a unique port, so client could connect to different workers at will.
 
