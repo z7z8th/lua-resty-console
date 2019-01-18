@@ -9,7 +9,7 @@ local ffi = require 'ffi'
 local hiredis = require 'hiredis'
 local readline = require 'resty.console.readline'
 local consts = require 'resty.console.consts'
-local ins = require "inspect"
+-- local ins = require "inspect"
 
 local HTTP_LINE = 'GET /console\r\n'
 
