@@ -1,15 +1,36 @@
-FROM openresty/openresty:1.13.6.2-xenial
+FROM openresty/openresty:1.13.6.2-alpine
 
-RUN apt-get update
-RUN apt-get install --yes --no-install-recommends perl expect tclsh 
-RUN apt-get install --yes --no-install-recommends build-essential git curl unzip libssl-dev 
-RUN luarocks install busted 
-RUN luarocks install luacheck 
-RUN luarocks install inspect 
-RUN luarocks install lua-hiredis-with-5.2-fix
-RUN echo "#!/usr/bin/env resty" > /usr/local/bin/resty-busted \
-      && echo "require 'busted.runner'({ standalone = false })" >> /usr/local/bin/resty-busted \
-      && chmod +x /usr/local/bin/resty-busted 
-RUN apt-get purge --yes --auto-remove build-essential git curl unzip libssl-dev
-RUN rm -rf /var/lib/apt/lists/*
+ARG RESTY_LUAROCKS_VERSION="2.4.4"
 
+
+
+RUN apk add --no-cache --virtual .build-deps \
+        bash \
+        build-base \
+        curl \
+        linux-headers \
+        make \
+        perl \
+        unzip \
+	git \
+    && cd /tmp \
+    && curl -fSL https://github.com/luarocks/luarocks/archive/${RESTY_LUAROCKS_VERSION}.tar.gz -o luarocks-${RESTY_LUAROCKS_VERSION}.tar.gz \
+    && tar xzf luarocks-${RESTY_LUAROCKS_VERSION}.tar.gz \
+    && cd luarocks-${RESTY_LUAROCKS_VERSION} \
+    && ./configure \
+        --prefix=/usr/local/openresty/luajit \
+        --with-lua=/usr/local/openresty/luajit \
+        --lua-suffix=jit-2.1.0-beta3 \
+        --with-lua-include=/usr/local/openresty/luajit/include/luajit-2.1 \
+    && make build \
+    && make install \
+    && cd /tmp \
+    && luarocks install busted \
+    && luarocks install luacheck \
+    && luarocks install inspect \
+    && luarocks install lua-hiredis-with-5.2-fix \
+    && echo "#!/usr/bin/env resty" > /usr/local/bin/resty-busted \
+    && echo "require 'busted.runner'({ standalone = false })" >> /usr/local/bin/resty-busted \
+    && chmod +x /usr/local/bin/resty-busted \
+    && rm -rf luarocks-${RESTY_LUAROCKS_VERSION} luarocks-${RESTY_LUAROCKS_VERSION}.tar.gz \
+    && apk del .build-deps

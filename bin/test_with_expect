@@ -24,7 +24,7 @@ ok() printf "${GREEN}OK${NC}\n"
 run_test() {
   test_file=$1
 
-  echo -n `basename -s $suffix $test_file`' .. '
+  echo -n `basename $test_file`' .. '
   expect $test_file >> /dev/null
   [ $? = 0 ] && ok || fail $test_file
 }

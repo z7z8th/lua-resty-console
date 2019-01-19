@@ -20,11 +20,11 @@ test: test_openresty test_luajit_integrational
 
 test_openresty:
 	@echo OPENRESTY:
-	@docker-compose run --rm app resty-busted spec
+	@docker-compose run --rm app sh -c 'apk add perl && resty-busted spec'
 
 test_luajit_integrational:
 	@echo LUAJIT INTEGRATIONAL:
-	@docker-compose run --rm app bin/test_with_expect
+	@docker-compose run --rm app sh -c 'apk add expect readline && bin/test_with_expect'
 
 shell:
 	docker-compose run --rm app
