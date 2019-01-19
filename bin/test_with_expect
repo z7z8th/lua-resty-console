@@ -6,6 +6,8 @@ luarocks make lua-resty-console-0.1.0-1.rockspec > /dev/null
 mkdir -p logs
 /usr/local/openresty/nginx/sbin/nginx -p $PWD -c conf/nginx.conf
 
+echo ngx.config.nginx_version > /tmp/luafile
+
 suffix=.exp
 
 RED='\033[0;31m'
@@ -25,7 +27,7 @@ run_test() {
   test_file=$1
 
   echo -n `basename $test_file`' .. '
-  expect $test_file >> /dev/null
+  expect $test_file
   [ $? = 0 ] && ok || fail $test_file
 }
 

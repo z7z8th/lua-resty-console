@@ -1,6 +1,6 @@
 #!/usr/bin/env tclsh
 
-set timeout 3
+set timeout 1
 
 set force_conservative 0  ;# set to 1 to force conservative mode even if
 			  ;# script wasn't run conservatively originally

@@ -9,24 +9,15 @@ local ffi = require 'ffi'
 local hiredis = require 'hiredis'
 local readline = require 'resty.console.readline'
 local consts = require 'resty.console.consts'
--- local ins = require "inspect"
-
+local utils = require 'resty.console.utils'
 local HTTP_LINE = 'GET /console\r\n'
 
-local function parse(arg)
-    local host, port
-    local pos = arg[1]:find(':', 1, true)
-    if pos then
-        host = arg[1]:sub(1, pos - 1)
-        port = arg[1]:sub(pos + 1)
-    else
-        host = arg[1]
-    end
+-- local ins = require "inspect"
 
-    return host or 'localhost', port or 8000
-end
 
-local HOST, PORT = parse(arg)
+local args = utils.parse_args()
+local HOST, PORT = utils.parse_endpoint(args.endpoint)
+-- print(ins(args))
 
 ffi.cdef [[
     /* lua-hiredis.c */
@@ -59,6 +50,12 @@ local function prompt_line(rclient, line_count)
     end
 end
 
+local function log(text)
+    if not args.quiet then
+        readline.puts(text)
+    end
+end
+
 local main = function()
 
     local rclient = hiredis.connect(HOST, PORT)
@@ -67,11 +64,23 @@ local main = function()
         return
     end
 
-    readline.puts('Connected to ' .. HOST .. ':' .. PORT)
+    log('Connected to ' .. HOST .. ':' .. PORT)
 
-    -- allow the connection to land on an HTTP handle
+    -- allow the connection to land on an HTTP handler
     local conn_ctx = ffi.cast('luahiredis_Connection *', rclient).pContext
     ffi.C.write(conn_ctx.fd, HTTP_LINE, #HTTP_LINE)
+
+    if args.chunk or args.file then
+        local code = args.chunk or io.input(args.file):read('*a')
+        local output = rclient:command(consts.REPL_TYPE_COMMAND, code)
+        if output then
+            readline.puts('=> ' .. output.name)
+        end
+
+        if not args.interactive then
+            return output.type == consts.REDIS_REPLY_ERROR
+        end
+    end
 
     readline.set_completion_func(function(word)
         local matches = rclient:command(consts.REPL_TYPE_AUTOCOMP, word)
@@ -108,7 +117,7 @@ local main = function()
         end
     end
 
-    readline.puts('Connection to '.. HOST .. ':' .. PORT .. ' closed')
+    log('Connection to '.. HOST .. ':' .. PORT .. ' closed')
 end
 
 main()

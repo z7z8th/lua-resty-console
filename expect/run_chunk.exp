@@ -1,0 +1,21 @@
+#!/usr/bin/expect -f
+
+source "expect/lib/helpers.tcl"
+
+spawn luajit lib/resty/console/client.lua localhost:80 -e ngx.config.nginx_version
+expect_or_fail {=> 1013006}
+expect_or_fail eof
+
+spawn luajit lib/resty/console/client.lua localhost:80 -e ngx.config.nginx_version -i
+expect_or_fail {=> 1013006}
+expect_prompt_line 1
+exit_repl
+
+spawn luajit lib/resty/console/client.lua localhost:80 -f /tmp/luafile -i
+expect_or_fail {=> 1013006}
+expect_prompt_line 1
+exit_repl
+
+spawn luajit lib/resty/console/client.lua localhost:80 -f notexist
+expect_or_fail {notexist: No such file or directory}
+expect_or_fail eof
