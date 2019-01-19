@@ -28,6 +28,7 @@ RUN apk add --no-cache --virtual .build-deps \
     && luarocks install busted \
     && luarocks install luacheck \
     && luarocks install inspect \
+    && luarocks install argparse \
     && luarocks install lua-hiredis-with-5.2-fix \
     && echo "#!/usr/bin/env resty" > /usr/local/bin/resty-busted \
     && echo "require 'busted.runner'({ standalone = false })" >> /usr/local/bin/resty-busted \
