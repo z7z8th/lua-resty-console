@@ -29,6 +29,13 @@ test_luajit_integrational:
 shell:
 	docker-compose run --rm app
 
+demo:
+        docker-compose run --rm app sh -c 'mkdir -p logs && \
+                export LUA_PATH="/lua-resty-console/lib/?.lua;;" && \
+                nginx -p /lua-resty-console -c conf/nginx.conf && \
+                apk add readline && \
+                luajit lib/resty/console/client.lua localhost:80'
+
 sync:
 	time (for d in expect/ spec/ .luacheckrc docker-compose.yml lib/ Makefile lua/ bin/ conf/; do rsync -rP $$d $(TARGET):$(DST_DIR)/$$d & done; wait)
 

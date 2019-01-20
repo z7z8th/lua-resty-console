@@ -18,9 +18,21 @@ These limitations make it less useful for development workflow and production li
 Experimental.
 
 ## Installation
+Install `resty-console` with LuaRocks
+
 ```
 luarocks install lua-resty-console
 ```
+or get a feel of it with Docker
+```
+$ git clone https://github.com/nicoster/lua-resty-console.git
+$ cd lua-resty-console
+$ make demo   # invoking docker-compose
+...
+Connected to localhost:80
+[1] ngx(content)> 
+```
+
 
 ## Synopsis
 
@@ -65,16 +77,22 @@ sudo ln -s $(luarocks show lua-resty-console|grep -o '/.*client.lua') /usr/local
 [1] ngx(content)> ngx.E →→      #press tab twice
 ngx.EMERG  ngx.ERR    ngx.ERROR        
 [1] ngx(content)> _G. →→
-_G._.                _G.debug.            _G.loadfile()        _G.pairs()           _G.setmetatable()
-_G._G.               _G.dofile()          _G.loadstring()      _G.pcall()           _G.string.
-_G._VERSION          _G.error()           _G.math.             _G.print()           _G.table.
-_G.__ngx_cycle       _G.gcinfo()          _G.module()          _G.rawequal()        _G.tonumber()
-_G.__ngx_req         _G.getfenv()         _G.ndk.              _G.rawget()          _G.tostring()
-_G.assert()          _G.getmetatable()    _G.newproxy()        _G.rawlen()          _G.type()
-_G.bit.              _G.io.               _G.next()            _G.rawset()          _G.unpack()
-_G.c.                _G.ipairs()          _G.ngx.              _G.require()         _G.xpcall()
-_G.collectgarbage()  _G.jit.              _G.os.               _G.select()          
-_G.coroutine.        _G.load()            _G.package.          _G.setfenv()         
+_G._.                _G.ipairs()          _G.rawequal()
+_G._G.               _G.jit.              _G.rawget()
+_G._VERSION          _G.load()            _G.rawlen()
+_G.__ngx_cycle       _G.loadfile()        _G.rawset()
+_G.__ngx_req         _G.loadstring()      _G.require()
+_G.assert()          _G.math.             _G.select()
+_G.bit.              _G.module()          _G.setfenv()
+_G.collectgarbage()  _G.ndk.              _G.setmetatable()
+_G.coroutine.        _G.newproxy()        _G.string.
+_G.debug.            _G.next()            _G.table.
+_G.dofile()          _G.ngx.              _G.tonumber()
+_G.error()           _G.os.               _G.tostring()
+_G.gcinfo()          _G.package.          _G.type()
+_G.getfenv()         _G.pairs()           _G.unpack()
+_G.getmetatable()    _G.pcall()           _G.xpcall()
+_G.io.               _G.print()         
 [1] ngx(content)> _G.
 ```
 
