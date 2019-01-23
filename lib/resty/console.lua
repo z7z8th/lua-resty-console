@@ -16,7 +16,7 @@ local _M = {}
 
 local context = function()
     if _G.ngx and _G.ngx.get_phase then
-        return 'ngx(' .. _G.ngx.get_phase() .. ')'
+        return 'ngx[' .. _G.ngx.worker.id() .. '].' .. _G.ngx.get_phase()
     else
         return 'lua(main)'
     end

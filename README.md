@@ -69,7 +69,11 @@ Connected to localhost:8001. Press ^C twice to exit.
 You may run the following command to install a shortcut to the client.
 
 ```
-sudo ln -s $(luarocks show lua-resty-console|grep -o '/.*client.lua') /usr/local/bin/resty-cli
+echo '#!/bin/sh' > /tmp/resty-cli
+luarocks path >> /tmp/resty-cli
+echo luajit `luarocks show lua-resty-console|grep -o "/.*client.lua"` '$*' >> /tmp/resty-cli
+chmod +x /tmp/resty-cli
+sudo mv /tmp/resty-cli /usr/local/bin
 ```
 
 #### Auto Completion
