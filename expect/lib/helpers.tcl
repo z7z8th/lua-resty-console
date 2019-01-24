@@ -39,7 +39,7 @@ proc press_up_arrow_key {{times 1}} {
 }
 
 proc expect_prompt_line {line_number} {
-  expect_or_fail "\\\[$line_number] ngx(content)> "
+  expect_or_fail "\\\[$line_number] ngx\\\[0].content> "
 }
 
 proc exit_repl {} {

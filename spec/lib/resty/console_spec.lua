@@ -9,7 +9,7 @@ insulate('context', function()
   end)
 
   it('has ngx_timer context', function()
-    assert.are_equal('ngx(timer)', repl.context())
+    assert.are_equal('ngx[0].timer', repl.context())
   end)
 
 end)

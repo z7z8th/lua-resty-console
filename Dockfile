@@ -10,9 +10,9 @@ RUN apk add --no-cache --virtual .build-deps \
         curl \
         linux-headers \
         make \
-        perl \
         unzip \
-	git \
+		git \
+	&& apk add perl expect readline \
     && cd /tmp \
     && curl -fSL https://github.com/luarocks/luarocks/archive/${RESTY_LUAROCKS_VERSION}.tar.gz -o luarocks-${RESTY_LUAROCKS_VERSION}.tar.gz \
     && tar xzf luarocks-${RESTY_LUAROCKS_VERSION}.tar.gz \

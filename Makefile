@@ -20,17 +20,17 @@ test: test_openresty test_luajit_integrational
 
 test_openresty:
 	@echo OPENRESTY:
-	@docker-compose run --rm app sh -c 'apk add perl && resty-busted spec'
+	@docker-compose run --rm app sh -c 'resty-busted spec'
 
 test_luajit_integrational:
 	@echo LUAJIT INTEGRATIONAL:
-	@docker-compose run --rm app sh -c 'apk add expect readline && bin/test_with_expect'
+	@docker-compose run --rm app sh -c 'bin/test_with_expect'
 
 shell:
 	docker-compose run --rm app
 
 demo:
-        docker-compose run --rm app sh -c 'mkdir -p logs && \
+	docker-compose run --rm app sh -c 'mkdir -p logs && \
                 export LUA_PATH="/lua-resty-console/lib/?.lua;;" && \
                 nginx -p /lua-resty-console -c conf/nginx.conf && \
                 apk add readline && \
