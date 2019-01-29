@@ -33,7 +33,6 @@ demo:
 	docker-compose run --rm app sh -c 'mkdir -p logs && \
                 export LUA_PATH="/lua-resty-console/lib/?.lua;;" && \
                 nginx -p /lua-resty-console -c conf/nginx.conf && \
-                apk add readline && \
                 luajit lib/resty/console/client.lua localhost:80'
 
 sync:

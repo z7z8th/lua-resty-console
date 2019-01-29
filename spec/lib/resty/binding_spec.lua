@@ -55,7 +55,7 @@ describe('resty repl binding', function()
 
   it('should calculate simple expression', function()
     local result = run '1 + 1'
-    assert.are_same({ ok = true, val = 2 }, result)
+    assert.are_same({ n = 1, ok = true, val = 2 }, result)
   end)
 
   it('should return locals', function()
@@ -65,27 +65,27 @@ describe('resty repl binding', function()
 
   it('should return locals with nil value', function()
     local result = run 'caller_local_nil'
-    assert.are_same({ ok = true, val = nil }, result)
+    assert.are_same({ n = 1, ok = true, val = nil }, result)
   end)
 
   it('should return locals with false value', function()
     local result = run 'caller_local_false'
-    assert.are_same({ ok = true, val = false }, result)
+    assert.are_same({ n = 1, ok = true, val = false }, result)
   end)
 
   it('should return upvalues with false value', function()
     local result = run 'upvalue_false'
-    assert.are_same({ ok = true, val = false}, result)
+    assert.are_same({ n = 1, ok = true, val = false}, result)
   end)
 
   it('should be able to set locals with false value', function()
     local result = run 'caller_local_false = 123; return caller_local_false'
-    assert.are_same({ ok = true, val = 123 }, result)
+    assert.are_same({ n = 1, ok = true, val = 123 }, result)
   end)
 
   it('should be able to set upvalues with false value', function()
     local result = run 'upvalue_false = 123; return upvalue_false'
-    assert.are_same({ ok = true, val = 123 }, result)
+    assert.are_same({ n = 1, ok = true, val = 123 }, result)
   end)
 
   it('should return locals with nil value even if global is not nil', function()
@@ -103,99 +103,99 @@ describe('resty repl binding', function()
   it('should return local arg', function()
     local result, outer_func_ret = run 'caller_arg'
 
-    assert.are_same({ ok = true, val = 'caller_arg_value' }, result)
+    assert.are_same({ n = 1, ok = true, val = 'caller_arg_value' }, result)
     assert.are_equal('caller_arg_value', outer_func_ret.caller_arg)
   end)
 
   it('should return upvalue', function()
     local result, outer_func_ret = run 'outer_local'
 
-    assert.are_same({ ok = true, val = 'outer_local' }, result)
+    assert.are_same({ n = 1, ok = true, val = 'outer_local' }, result)
     assert.are_equal('outer_local', outer_func_ret.outer_local)
   end)
 
   it('should return upvalue arg', function()
     local result, outer_func_ret = run 'outer_arg'
 
-    assert.are_same({ ok = true, val = 'outer_arg' }, result)
+    assert.are_same({ n = 1, ok = true, val = 'outer_arg' }, result)
     assert.are_equal('outer_arg', outer_func_ret.outer_arg)
   end)
 
   it('should update locals', function()
     local result, outer_func_ret = run 'caller_local = 123'
 
-    assert.are_same({ ok = true }, result) -- no ret value
+    assert.are_same({ n = 0, ok = true }, result) -- no ret value
     assert.are_equal(123, outer_func_ret.caller_local)
   end)
 
   it('should update local args', function()
     local result, outer_func_ret = run 'caller_arg = "123"; return caller_arg'
 
-    assert.are_same({ ok = true, val = '123' }, result)
+    assert.are_same({ n = 1, ok = true, val = '123' }, result)
     assert.are_equal('123', outer_func_ret.caller_arg)
   end)
 
   it('should update upvalues', function()
     local result, outer_func_ret = run 'outer_local = 123'
 
-    assert.are_same({ ok = true }, result) -- no ret value
+    assert.are_same({ n = 0, ok = true }, result) -- no ret value
     assert.are_equal(123, outer_func_ret.outer_local)
   end)
 
   it('should update upvalues with return', function()
     local result, outer_func_ret = run 'outer_local = 123; return outer_local'
 
-    assert.are_same({ ok = true, val = 123}, result)
+    assert.are_same({ n = 1, ok = true, val = 123}, result)
     assert.are_equal(123, outer_func_ret.outer_local)
   end)
 
   it('should update upvalues with ret value nil', function()
     local result, outer_func_ret = run 'outer_local = 123; return nil'
 
-    assert.are_same({ ok = true, val = nil }, result)
+    assert.are_same({ n = 1, ok = true, val = nil }, result)
     assert.are_equal(123, outer_func_ret.outer_local)
   end)
 
   it('should update upargs', function()
     local result, outer_func_ret = run 'outer_arg = 123'
 
-    assert.are_same({ ok = true }, result) -- no ret value
+    assert.are_same({ n = 0, ok = true }, result) -- no ret value
     assert.are_equal(123, outer_func_ret.outer_arg)
   end)
 
   it('should read from fenv', function()
     local result = run 'foo'
-    assert.are_same({ ok = true, val = nil }, result)
+    assert.are_same({ n = 1, ok = true, val = nil }, result)
 
     binding.env.foo = 'foo'
 
     result = run 'foo'
-    assert.are_same({ ok = true, val = 'foo' }, result)
+    assert.are_same({ n = 1, ok = true, val = 'foo' }, result)
   end)
 
   it('should update last return value into `_`', function()
     local result = run '_'
-    assert.are_same({ ok = true, val = nil }, result)
+    assert.are_same({ n = 1, ok = true, val = nil }, result)
 
     run '123'
 
     result = run '_'
-    assert.are_same({ ok = true, val = 123 }, result)
+    assert.are_same({ n = 1, ok = true, val = 123 }, result)
   end)
 
   it('should remember vars between runs', function()
     local result = run 'a'
-    assert.are_same({ ok = true, val = nil }, result)
+    assert.are_same({ n = 1, ok = true, val = nil }, result)
 
     run 'a = 123'
 
     result = run 'a'
-    assert.are_same({ ok = true, val = 123 }, result)
+    assert.are_same({ n = 1, ok = true, val = 123 }, result)
   end)
 
   it('should compile more complicated expressions', function()
     local result = run 'f=function() return 123 end; return f()'
-    assert.are_same({ ok = true, val = 123 }, result)
+    assert.are_same({ n = 1, ok = true, val = 123 }, result)
   end)
 
   context('eval result', function()

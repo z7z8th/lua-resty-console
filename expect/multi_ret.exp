@@ -16,8 +16,8 @@ expect_or_fail "=> { \"a\" }, \"b\""
 
 expect_prompt_line 3
 
-input "(function() return {{'a'}, 'b'} end)()"
-expect_or_fail "=> { { \"a\" }, \"b\" }"
+input "(function() return nil, 'a' end)()"
+expect_or_fail "=> nil, \"a\""
 
 expect_prompt_line 4
 

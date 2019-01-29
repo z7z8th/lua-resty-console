@@ -28,11 +28,13 @@ function result_mt:inspect()
     if _G.ngx and (_G.ngx.null == self.val) then
         value = '<ngx.null>'
     elseif 'table' == type(self.val) then
-        print(ins(self))
-        if self.multi then
-            local t = new_tab(#self.val, 0)
-            for _, v in ipairs(self.val) do
-                table.insert(t, ins(v))
+        -- print(ins(self))
+        if self.n >= 2 then
+            local t = new_tab(self.n, 0)
+            local i = 1
+            while i <= self.n do
+                table.insert(t, ins(self.val[i]))
+                i = i + 1
             end
             value = table.concat(t, ', ')
         else
@@ -45,14 +47,12 @@ end
 
 local make_result = function(ok, ...)
     local val = {...}
-    local multi
+    local n = select('#', ...)
     --ngx.log(ngx.DEBUG, 'res:', inspect(val))
-    if #val < 2 then
+    if n < 2 then
         val = val[1]
-    else
-        multi = true
     end
-    return setmetatable({ ok = ok, val = val, multi = multi }, result_mt)
+    return setmetatable({ ok = ok, val = val, n = n }, result_mt)
 end
 _M.make_result = make_result
 
