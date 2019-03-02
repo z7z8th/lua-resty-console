@@ -43,7 +43,7 @@ The client talks to the backend using [REdis Serialization Protocol](https://red
 
 ### Backend
 Add the following snippet into your nignx configuration
-```
+``` conf
 lua_shared_dict mycache 128M;   # for demo only 
 lua_shared_dict metrics 128M;   # for demo only
 
@@ -68,7 +68,7 @@ Connected to localhost:8001. Press ^C twice to exit.
 ```
 You may run the following command to install a shortcut to the client.
 
-```
+``` bash
 echo '#!/bin/sh' > /tmp/resty-cli
 luarocks path >> /tmp/resty-cli
 echo luajit `luarocks show lua-resty-console|grep -o "/.*client.lua"` '$*' >> /tmp/resty-cli
@@ -77,7 +77,7 @@ sudo mv /tmp/resty-cli /usr/local/bin
 ```
 
 #### Auto Completion
-```
+``` lua
 [1] ngx(content)> ngx.E →→      #press tab twice
 ngx.EMERG  ngx.ERR    ngx.ERROR        
 [1] ngx(content)> _G. →→
@@ -101,7 +101,7 @@ _G.io.               _G.print()
 ```
 
 #### Invoke Functions
-```
+``` lua
 [1] ngx(content)> f = function() return 'a', 'b' end
 => nil
 [2] ngx(content)> f()
@@ -116,7 +116,7 @@ _G.io.               _G.print()
 #### Check VM Internals
 
 Below is an example of replicating the functionalities of [lua-resty-shdict-server](https://github.com/fffonion/lua-resty-shdict-server), manipulating shared-dict with canonical APIs directly.
-```
+``` lua
 [9] ngx(content)> ngx.config.prefix()
 => /workspace/lua-resty-console/
 [10] ngx(content)> ngx.config.ngx_lua_version
@@ -161,6 +161,35 @@ ngx.shared.mycache.    ngx.shared.metrics.
 [16] ngx(content)> c:get_keys()
 => { "a" }
 
+```
+
+#### Hook Functions
+Sometimes you want to check how a function has been invoked - like checking its return values. You can do it this way:
+
+``` lua
+...
+[18] ngx[2].content> u = require('lua.utils')
+[19] ngx[2].content> u.verify_token
+=> function: 0x16aa88c0
+[20] ngx[2].content> u.verify_token2 = u.verify_token
+=> nil
+[21] ngx[2].content> u.verify_token2 
+=> function: 0x16aa88c0
+[22] ngx[2].content> u.verify_token = function(token) local result = u.verify_token2(token) ngx.log(ngx.DEBUG, 'result:', result) return result end
+=> nil
+[23] ngx[2].content> u.verify_token2 
+=> function: 0x16aa88c0
+[24] ngx[2].content> u.verify_token
+=> function: 0x0ea75780
+[25] ngx[2].content> u.verify_token('axb')
+=> false
+[26] ngx[2].content> 
+
+```
+
+You can check the error.logs and see something like:
+```
+2019/03/02 16:23:00 [debug] 73869#16875222: *810 [lua] [string "u.verify_token = function(token) local result = u..."]:1: result:false
 ```
 
 
