@@ -197,6 +197,11 @@ You can check the error.logs and see something like:
 Right now it's only compatible with:
 - Openresty/luajit
 
+## Todo
+- print support. print doesn't work at present as RESP doesn't support arbitrary length of data. 
+- multi-line support
+- rewrite hiredis logic with luasocket
+
 ## Known Issues
 If nginx runs with multiple workers (which is the normal case), each worker has an isolated Lua VM to handle requests. When a resty-console client connects to the backend, there's a good chance that connections are established with different workers, thus each time the client is dealing with a different Lua VM.
 
