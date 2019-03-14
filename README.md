@@ -71,7 +71,7 @@ You may run the following command to install a shortcut to the client.
 ``` bash
 echo '#!/bin/sh' > /tmp/resty-cli
 luarocks path >> /tmp/resty-cli
-echo luajit `luarocks show lua-resty-console|grep -o "/.*client.lua"` '$*' >> /tmp/resty-cli
+echo bash -c \"luajit `luarocks show lua-resty-console|grep -o "/.*client.lua"` "\$(printf ' %q' \"\$@\")"\" >> /tmp/resty-cli
 chmod +x /tmp/resty-cli
 sudo mv /tmp/resty-cli /usr/local/bin
 ```
