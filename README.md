@@ -44,8 +44,8 @@ The client talks to the backend using [REdis Serialization Protocol](https://red
 ### Backend
 Add the following snippet into your nignx configuration
 ``` conf
-lua_shared_dict mycache 128M;   # for demo only 
-lua_shared_dict metrics 128M;   # for demo only
+lua_shared_dict mycache 1M;   # for demo only 
+lua_shared_dict metrics 1M;   # for demo only
 
 server {
   listen 127.0.0.1:8001;
