@@ -60,21 +60,16 @@ The location is hardcoded to `/console` in the client, and it's not configurable
 
 ### Client
 
-Issue the following command to launch client and connect to the backend
+* Issue the following command to launch client and connect to the backend
+
 ```
 $ luajit <LUAROCKS-DIR>/lib/resty/console/client.lua localhost:8001
 Connected to localhost:8001. Press ^C twice to exit.
 [1] ngx(content)>
 ```
-You may run the following command to install a shortcut to the client.
 
-``` bash
-echo '#!/bin/sh' > /tmp/resty-cli
-luarocks path >> /tmp/resty-cli
-echo bash -c \"luajit `luarocks show lua-resty-console|grep -o "/.*client.lua"` "\$(printf ' %q' \"\$@\")"\" >> /tmp/resty-cli
-chmod +x /tmp/resty-cli
-sudo mv /tmp/resty-cli /usr/local/bin
-```
+* Or run `resty-cli localhost:8001` to connect.  
+  You may need to run `PATH=$HOME/.luarocks/bin:$PATH` first if your luarocks is installed with `--local`.
 
 #### Auto Completion
 ``` lua

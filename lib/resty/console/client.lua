@@ -64,7 +64,7 @@ local main = function()
         return
     end
 
-    log('Connected to ' .. HOST .. ':' .. PORT)
+    log('Connected to ' .. HOST .. (PORT and ':' .. PORT or ''))
 
     -- allow the connection to land on an HTTP handler
     local conn_ctx = ffi.cast('luahiredis_Connection *', rclient).pContext
@@ -117,7 +117,7 @@ local main = function()
         end
     end
 
-    log('Connection to '.. HOST .. ':' .. PORT .. ' closed')
+    log('Connection to '.. HOST .. ( PORT and ':' .. PORT or '') .. ' closed')
 end
 
 main()

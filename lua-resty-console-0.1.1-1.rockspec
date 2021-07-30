@@ -1,8 +1,8 @@
 package = "lua-resty-console"
-version = "0.1.0-1"
+version = "0.1.1-1"
 source = {
    url = "git://github.com/nicoster/lua-resty-console",
-   tag = "v0.1.0"
+   tag = "v0.1.1"
 }
 description = {
    summary = "Interactive console (REPL) for Openresty to inspect Lua VM internal state, to run lua code, to invoke functions and more",
@@ -28,4 +28,9 @@ build = {
       ["resty.console.resp"] = "lib/resty/console/resp.lua",
       ["resty.console.utils"] = "lib/resty/console/utils.lua",
    },
+   install = {
+      bin = {
+         ["resty-cli"] = "bin/resty-cli",
+      }
+  },
 }

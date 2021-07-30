@@ -26,6 +26,11 @@ end
 
 
 local function parse_endpoint(arg)
+    -- unix socket
+    if string.match(arg, '^/') then
+        return arg
+    end
+
     local host, port
     local pos = arg:find(':', 1, true)
     if pos then

@@ -1,0 +1,6 @@
+#!/bin/sh
+
+eval "$(luarocks path)"
+
+client_path=$(luarocks show lua-resty-console|grep -o "/.*client.lua")
+luajit "$client_path" "$@"
